@@ -1,8 +1,8 @@
 <script type="text/javascript">
-    RED.nodes.registerType('google', {
-        category: 'function',
-        color: '#FFCC66',
-        icon: 'google.png',
+    RED.nodes.registerType("google", {
+        category: "function",
+        color: "#ffcc66",
+        icon: "google.png",
         defaults: {
             name: {
                 value: ""
@@ -20,46 +20,46 @@
         },
         inputs: 1,
         outputs: 1,
-        label: function() {
+        label: function () {
             return this.name || "google";
         },
         oneditprepare: function oneditprepare() {
 
-            var node = this;
-            var selectAPI = $('#node-input-api');
-            var selectOperation = $('#node-input-operation');
-            var scopesInfo = $('#node-scopes-info');
+            var node            = this;
+            var selectAPI       = $("#node-input-api");
+            var selectOperation = $("#node-input-operation");
+            var scopesInfo      = $("#node-scopes-info");
 
-            selectAPI.change(function() {
+            selectAPI.change(function () {
 
                 scopesInfo.empty();
-                selectOperation.children().not('#node-input-dynamic-operation').remove();
+                selectOperation.children().not("#node-input-dynamic-operation").remove();
                 var api = selectAPI.val();
 
                 if (api) {
-                    $.getJSON("google/apis/" + api + "/info", function(data) {
-                        selectOperation.children().last().after(data.operations.map(function(d) {
-                            return $('<option></option>').attr('value', d).attr('selected', node.operation === d).text(d).wrap('<p/>').parent().html();
+                    $.getJSON("google/apis/" + api + "/info", function (data) {
+                        selectOperation.children().last().after(data.operations.map(function (d) {
+                            return $("<option></option>").attr("value", d).attr("selected", node.operation === d).text(d).wrap("<p/>").parent().html();
                         }).join(""));
                         if (data.operations.indexOf(node.operation) < 0) {
-                            $('#node-input-dynamic-operation').attr('selected', true);
+                            $("#node-input-dynamic-operation").attr("selected", true);
                         };
-                        $.each(data.scopes, function(i, v) {
-                            scopesInfo.append($('<li></li>').text(v));
+                        $.each(data.scopes, function (i, v) {
+                            scopesInfo.append($("<li></li>").text(v));
                         });
                     });
                 } else {
-                    $('#node-input-dynamic-operation').attr('selected', true);
+                    $("#node-input-dynamic-operation").attr("selected", true);
                 }
                 selectOperation.change();
             });
 
-            $.getJSON("google/apis", function(data) {
-                selectAPI.children().last().after(data.map(function(d) {
-                    return $('<option></option>').attr('value', d).attr('selected', node.api === d).text(d).wrap('<p/>').parent().html();
+            $.getJSON("google/apis", function (data) {
+                selectAPI.children().last().after(data.map(function (d) {
+                    return $("<option></option>").attr("value", d).attr("selected", node.api === d).text(d).wrap("<p/>").parent().html();
                 }).join(""));
                 if (data.indexOf(node.api) < 0) {
-                    $('#node-input-dynamic-api').attr('selected', true);
+                    $("#node-input-dynamic-api").attr("selected", true);
                 }
                 selectAPI.change();
             });
@@ -69,38 +69,39 @@
 </script>
 
 <script type="text/x-red" data-template-name="google">
-    <div class="form-row">
-        <label for="node-input-name">
-            <i class="icon-tag"></i>
+    <div className="form-row">
+        <label htmlFor="node-input-name">
+            <i className="icon-tag"></i>
             Name</label>
         <input type="text" id="node-input-name" placeholder="Name"/>
     </div>
-    <div class="form-row">
-        <label for="node-input-google">
-            <i class="fa fa-google"></i>
+    <div className="form-row">
+        <label htmlFor="node-input-google">
+            <i className="fa fa-google"></i>
             Connection</label>
         <input type="text" id="node-input-google"/>
     </div>
-    <div class="form-row">
-        <label for="node-input-api">
-            <i class="fa fa-wrench"></i>
+    <div className="form-row">
+        <label htmlFor="node-input-api">
+            <i className="fa fa-wrench"></i>
             API</label>
         <select type="text" id="node-input-api" style="display: inline-block;">
             <option value="" id="node-input-dynamic-api" style="font-style: italic;">Dynamic (msg.api)</option>
         </select>
     </div>
-    <div class="form-row">
-        <label for="node-input-operation">
-            <i class="fa fa-wrench"></i>
+    <div className="form-row">
+        <label htmlFor="node-input-operation">
+            <i className="fa fa-wrench"></i>
             Operation</label>
         <select type="text" id="node-input-operation" style="display: inline-block; vertical-align: top;">
             <option value="" id="node-input-dynamic-operation" style="font-style: italic;">Dynamic (msg.operation)</option>
         </select>
     </div>
-    <div class="form-row">
-        <label for="node-scopes-info">API Scopes</label>
+    <div className="form-row">
+        <label htmlFor="node-scopes-info">API Scopes</label>
         <ul id="node-scopes-info"></ul>
     </div>
+
 </script>
 
 <script type="text/x-red" data-help-name="google">
@@ -118,4 +119,5 @@
             <i>google-api-nodejs-client</i>
         </a> and <a href="https://developers.google.com/discovery/" target="_blank"><i>Google API Discovery Service</i></a>
         for available APIs and operations.</p>
+
 </script>
