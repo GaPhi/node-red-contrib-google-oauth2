@@ -14,6 +14,8 @@ module.exports = function (RED) {
         };
     }
 
+    const fs = require("fs");
+    const updatedTokensFile = RED.settings.userDir+'/GoogleNode_tokens.json';
     var {google}  = require('googleapis');
     var discovery = google.discovery({version: 'v1'});
 
@@ -82,6 +84,19 @@ module.exports = function (RED) {
         node.operation = config.operation;
         node.scopes    = config.scopes;
 
+        if (!fs.existsSync(updatedTokensFile)) {
+            console.log('Create GoogleNode tokens file '+updatedTokensFile);
+            fs.writeFileSync(updatedTokensFile, '{}');
+        }
+        if (fs.existsSync(updatedTokensFile)) {
+            var updatedTokens = JSON.parse(fs.readFileSync(updatedTokensFile));
+            node.config.credentials.accessToken  = updatedTokens?.accessToken  ?? node.config.credentials.accessToken;
+            node.config.credentials.refreshToken = updatedTokens?.refreshToken ?? node.config.credentials.refreshToken;
+            node.config.scopes                   = updatedTokens?.scopes       ?? node.config.scopes;
+            node.config.credentials.tokenType    = updatedTokens?.tokenType    ?? node.config.credentials.tokenType;
+            node.config.credentials.expireTime   = updatedTokens?.expireTime   ?? node.config.credentials.expireTime;
+            console.log('GoogleNode tokens restored from '+updatedTokensFile);
+        }
         const oauth2Client = new google.auth.OAuth2(
             node.config.credentials.clientId,
             node.config.credentials.clientSecret
@@ -94,10 +109,20 @@ module.exports = function (RED) {
             expiry_date: node.config.credentials.expireTime
         });
         oauth2Client.on('tokens', (tokens) => {
-            if (tokens.refresh_token) {
-                node.config.credentials.refreshToken = tokens.refresh_token;
-                RED.nodes.addCredentials(config.google, node.config.credentials);
-            }
+            node.config.credentials.accessToken = tokens.access_token ?? node.config.credentials.accessToken;
+            node.config.credentials.refreshToken = tokens.refresh_token ?? node.config.credentials.refreshToken;
+            node.config.scopes = tokens.scope?.replace(/ /g, "\n") ?? node.config.credentials.scopes;
+            node.config.credentials.tokenType = tokens.token_type ?? node.config.credentials.tokenType;
+            node.config.credentials.expireTime = tokens.expiry_date ?? node.config.credentials.expireTime;
+            RED.nodes.addCredentials(config.google, node.config.credentials);
+            fs.writeFileSync(updatedTokensFile, JSON.stringify({
+                accessToken  : node.config.credentials.accessToken,
+                refreshToken : node.config.credentials.refreshToken,
+                scopes       : node.config.scopes,
+                tokenType    : node.config.credentials.tokenType,
+                expireTime   : node.config.credentials.expireTime,
+            }));
+            console.log('GoogleNode tokens updated and saved in '+updatedTokensFile);
         });
 
         node.on('input', function (msg) {

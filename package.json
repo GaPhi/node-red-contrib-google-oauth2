@@ -1,11 +1,13 @@
 {
   "name": "@gaphi/node-red-contrib-google-oauth2",
-  "version": "0.3.3-0",
+  "version": "0.3.3-1",
   "description": "Node-RED node for Google APIs call using OAuth2.",
   "dependencies": {
     "googleapis": "^67.0.0"
   },
   "license": "MIT",
+  "deprecated": false,
+  "homepage": "https://github.com/GaPhi/node-red-contrib-google-oauth2#readme",
   "keywords": [
     "node-red",
     "google",
@@ -21,6 +23,10 @@
   "author": {
     "name": "Tom Stanczyk"
   },
+  "bugs": {
+    "url": "https://github.com/GaPhi/node-red-contrib-google-oauth2/issues"
+  },
+  "bundleDependencies": false,
   "contributors": [
     {
       "name": "Patrick Hieber"
@@ -31,6 +37,6 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/GaPhi/node-red-contrib-google-oauth2"
+    "url": "git+https://github.com/GaPhi/node-red-contrib-google-oauth2.git"
   }
 }
