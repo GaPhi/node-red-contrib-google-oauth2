@@ -48,7 +48,7 @@ module.exports = function (RED) {
                 configNode.scopes = tokens.scope?.replace(/ /g, "\n") ?? configNode.credentials.scopes;
                 configNode.credentials.tokenType = tokens.token_type ?? configNode.credentials.tokenType;
                 configNode.credentials.expireTime = tokens.expiry_date ?? configNode.credentials.expireTime;
-                RED.nodes.addCredentials(config.google, configNode.credentials);
+                RED.nodes.addCredentials(configNode.id, configNode.credentials);
                 if (configNode.id != null) {
                     var lastTokens = {
                         accessToken: configNode.credentials.accessToken,

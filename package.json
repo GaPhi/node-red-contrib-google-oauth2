@@ -1,6 +1,6 @@
 {
   "name": "@gaphi/node-red-contrib-google-oauth2",
-  "version": "0.3.3-2",
+  "version": "0.3.3-3",
   "description": "Node-RED node for Google APIs call using OAuth2.",
   "dependencies": {
     "googleapis": "^67.0.0"
